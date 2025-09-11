@@ -1,0 +1,30 @@
+# Ignore VCS and metadata
+.git
+.gitignore
+.github
+
+# Python caches and virtualenvs
+**/__pycache__/
+**/*.py[cod]
+.venv
+.venv/**
+.test-venv
+.test-venv/**
+.pytest_cache
+.mypy_cache
+
+# Node/yarn
+node_modules
+**/node_modules
+
+# macOS
+.DS_Store
+
+# CDK outputs and bundles (avoid recursive context growth)
+cdk.out
+**/cdk.out
+infra/cdk/cdk.out
+
+# Docker
+*.dockerignore
+

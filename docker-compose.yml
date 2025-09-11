@@ -1,23 +1,70 @@
 services:
-  # etcd - Distributed key-value store
-  etcd:
+  # etcd cluster - 3 node distributed key-value store
+  etcd1:
     image: quay.io/coreos/etcd:v3.5.3
-    container_name: config-etcd
+    container_name: config-etcd-1
     environment:
-      - ETCD_NAME=etcd0
+      - ETCD_NAME=etcd1
       - ETCD_DATA_DIR=/etcd-data
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd1:2379
       - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
-      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380
-      - ETCD_INITIAL_CLUSTER=etcd0=http://etcd:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd1:2380
+      - ETCD_INITIAL_CLUSTER=etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
       - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-1
       - ETCD_INITIAL_CLUSTER_STATE=new
     ports:
-      - "2379:2379"
-      - "2380:2380"
+      - "2379:2379"   # expose a single client endpoint on host
     volumes:
-      - etcd_data:/etcd-data
+      - etcd_data1:/etcd-data
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  etcd2:
+    image: quay.io/coreos/etcd:v3.5.3
+    container_name: config-etcd-2
+    environment:
+      - ETCD_NAME=etcd2
+      - ETCD_DATA_DIR=/etcd-data
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd2:2379
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd2:2380
+      - ETCD_INITIAL_CLUSTER=etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-1
+      - ETCD_INITIAL_CLUSTER_STATE=new
+    ports:
+      - "22379:2379"   # expose second member for host failover
+    volumes:
+      - etcd_data2:/etcd-data
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  etcd3:
+    image: quay.io/coreos/etcd:v3.5.3
+    container_name: config-etcd-3
+    environment:
+      - ETCD_NAME=etcd3
+      - ETCD_DATA_DIR=/etcd-data
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd3:2379
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd3:2380
+      - ETCD_INITIAL_CLUSTER=etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-1
+      - ETCD_INITIAL_CLUSTER_STATE=new
+    ports:
+      - "32379:2379"   # expose third member for host failover
+    volumes:
+      - etcd_data3:/etcd-data
     healthcheck:
       test: ["CMD", "etcdctl", "endpoint", "health"]
       interval: 30s
@@ -30,7 +77,7 @@ services:
     build: .
     container_name: config-service
     environment:
-      - ETCD_ENDPOINTS=etcd:2379
+      - ETCD_ENDPOINTS=etcd1:2379,etcd2:2379,etcd3:2379
       - SERVICE_NAME=example-app
       - HOST=0.0.0.0
       - PORT=8080
@@ -39,7 +86,11 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      etcd:
+      etcd1:
+        condition: service_healthy
+      etcd2:
+        condition: service_healthy
+      etcd3:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
@@ -71,4 +122,6 @@ services:
         condition: service_healthy
 
 volumes:
-  etcd_data:
+  etcd_data1:
+  etcd_data2:
+  etcd_data3:

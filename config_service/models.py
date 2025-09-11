@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -27,3 +27,29 @@ class ConfigBatchResponse(BaseModel):
     namespace: str
     environment: str
     configs: Dict[str, ConfigValue]
+
+
+# Management API Models
+class EmergencyOverrideRequest(BaseModel):
+    value: Any
+    reason: Optional[str] = None
+    created_by: Optional[str] = None
+
+
+class DeployRequest(BaseModel):
+    git_ref: str
+    created_by: str
+    configs: Dict[str, Any]  # key -> value mapping
+
+
+class VersionHistoryResponse(BaseModel):
+    namespace: str
+    environment: str
+    versions: Dict[str, List[ConfigValue]]
+
+
+class DeployResponse(BaseModel):
+    success: bool
+    message: str
+    version: str
+    deployed_count: int

@@ -75,3 +75,10 @@ Thumbs.db
 
 # etcd data
 default.etcd/
+
+# CDK build output (should never be committed)
+infra/cdk/cdk.out/
+**/cdk.out/
+
+# Local envs
+.test-venv/

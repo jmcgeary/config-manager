@@ -14,9 +14,10 @@ class ConfigClient:
     
     Features:
     - Automatic connection to localhost sidecar
-    - Local caching with TTL
+    - Local caching with TTL for resilience
     - Error handling and graceful degradation
     - Simple get() method for configuration access
+    - Sidecar handles all real-time updates automatically
     """
     
     def __init__(
@@ -24,7 +25,7 @@ class ConfigClient:
         base_url: str = None,
         namespace: str = None,
         environment: str = None,
-        cache_ttl: int = 300,
+        cache_ttl: int = 30,  # Shorter TTL since sidecar has real-time updates
         timeout: int = 5
     ):
         self.base_url = base_url or os.getenv('CONFIG_SERVICE_URL', 'http://localhost:8080')

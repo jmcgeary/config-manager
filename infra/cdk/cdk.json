@@ -1,0 +1,11 @@
+{
+  "app": "python app.py",
+  "context": {
+    "imageMode": "asset",
+    "ecrRepoName": "config-service",
+    "ecrTag": "latest",
+    "cpu": 1024,
+    "memoryMiB": 2048,
+    "logGroupName": "auto"
+  }
+}

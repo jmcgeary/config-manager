@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Config Manager Demo</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-left">
+        <h1>Config Manager Demo</h1>
+        <p class="subtitle">Namespace: <span id="ns-label">…</span> · Env: demo</p>
+      </div>
+      <div class="header-right">
+        <button id="share-btn" class="btn">Share live view</button>
+      </div>
+    </header>
+    <main class="grid">
+      <section class="card controls">
+        <h2>KV Editor</h2>
+        <div class="form">
+          <label>
+            Key
+            <input id="key-input" type="text" placeholder="payments/featureA" />
+          </label>
+          <label>
+            Value
+            <input id="value-input" type="text" placeholder="true | 42 | some text" />
+          </label>
+          <div>
+            <button id="write-btn" class="btn primary">Write</button>
+          </div>
+          <p class="hint">Writes to <code>/v1/config/&lt;slug&gt;/demo/{key}</code> (e.g., <code>payments/featureA</code>)</p>
+        </div>
+      </section>
+
+      <section class="card cluster">
+        <div class="flex">
+          <h2>Cluster</h2>
+          <div class="btn-row">
+            <button id="kill-leader" class="btn">Kill Leader</button>
+            <button id="revive-all" class="btn">Revive All</button>
+          </div>
+        </div>
+        <div id="cluster" class="cluster-grid"></div>
+      </section>
+
+      <section class="card replication">
+        <h2>Replication Log</h2>
+        <div id="write-logs" class="write-logs"></div>
+      </section>
+
+      <section class="card table">
+        <h2>KV Table</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+              <th>Version</th>
+              <th>By</th>
+              <th>At</th>
+            </tr>
+          </thead>
+          <tbody id="kv-body"></tbody>
+        </table>
+      </section>
+
+      <section class="card consoles">
+        <div class="flex">
+          <h2>Mock Services</h2>
+          <button id="add-service-btn" class="btn">Add Service</button>
+        </div>
+        <div id="consoles" class="console-grid"></div>
+      </section>
+
+      <section class="card clusterlog">
+        <h2>Cluster Log</h2>
+        <div id="cluster-log" class="log-box"></div>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+  </html>
