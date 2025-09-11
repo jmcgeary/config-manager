@@ -6,6 +6,8 @@ The client is easy to use, and there's an actual implementation of a service usi
 
 Check out https://d3cyva4awzcrtq.cloudfront.net to play around with a deployed version. (Demo to come soon)
 
+![alt text](image.png)
+
 ## Overview
 
 - Purpose: simple, reliable runtime configuration for services via a local sidecar and a small client library.
