@@ -1,10 +1,8 @@
-# Config Manager (etcd)
+# Fault Tolerant Dynamic Config Manager [Try it here](https://d3cyva4awzcrtq.cloudfront.net)
 
 This project is a dynamic config management system built on etcd with real-time updates.
 
 The client is easy to use, and there's an actual implementation of a service using it here.
-
-Check out https://d3cyva4awzcrtq.cloudfront.net to play around with a deployed version. (Demo to come soon)
 
 ![alt text](image.png)
 
